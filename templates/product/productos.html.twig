@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Listado de Productos{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Listado de Productos</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                    <tr>
+                        <td>{{ producto.id }}</td>
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.precio }} €</td>
+                        <td>
+                            <a href="{{ path('producto_id', { id: producto.id }) }}" class="btn btn-info btn-sm">Ver</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-center">
+            {{ knp_pagination_render(productos) }}
+        </div>
+
+        {# Uncomment if you want to add a link to create more products #}
+        {# <a href="{{ path('crear_productos') }}" class="btn btn-primary mt-3">Crear más productos</a> #}
+    </div>
+{% endblock %}
