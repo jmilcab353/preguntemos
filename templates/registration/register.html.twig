@@ -1,0 +1,73 @@
+{# {% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <h1>Register</h1>
+
+    {{ form_errors(registrationForm) }}
+
+    {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.email) }}
+        {{ form_row(registrationForm.plainPassword, {
+            label: 'Password'
+        }) }}
+        {{ form_row(registrationForm.agreeTerms) }}
+
+        <button type="submit" class="btn">Register</button>
+    {{ form_end(registrationForm) }}
+{% endblock %} #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Registro</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <!-- Display form errors -->
+                {% if form_errors(registrationForm) %}
+                    <div class="alert alert-danger">
+                        {{ form_errors(registrationForm) }}
+                    </div>
+                {% endif %}
+
+                <!-- Start the form -->
+                {{ form_start(registrationForm, {'attr': {'class': 'needs-validation'}}) }}
+                
+                <!-- Email field -->
+                <div class="mb-3">
+                    {{ form_row(registrationForm.email, {
+                        'attr': {'class': 'form-control'},
+                        'label_attr': {'class': 'form-label'}
+                    }) }}
+                </div>
+
+                <!-- Password field -->
+                <div class="mb-3">
+                    {{ form_row(registrationForm.plainPassword, {
+                        label: 'Password',
+                        'attr': {'class': 'form-control'},
+                        'label_attr': {'class': 'form-label'}
+                    }) }}
+                </div>
+
+                <!-- Agree to terms field -->
+                <div class="mb-3 form-check">
+                    {{ form_row(registrationForm.agreeTerms, {
+                        'attr': {'class': 'form-check-input'},
+                        'label_attr': {'class': 'form-check-label'}
+                    }) }}
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary w-100">Register</button>
+                
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
