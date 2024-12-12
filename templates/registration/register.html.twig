@@ -20,7 +20,7 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Registro{% endblock %}
 
 {% block body %}
     <div class="container mt-5">
@@ -49,22 +49,14 @@
                 <!-- Password field -->
                 <div class="mb-3">
                     {{ form_row(registrationForm.plainPassword, {
-                        label: 'Password',
+                        label: 'Contraseña',
                         'attr': {'class': 'form-control'},
                         'label_attr': {'class': 'form-label'}
                     }) }}
                 </div>
 
-                <!-- Agree to terms field -->
-                <div class="mb-3 form-check">
-                    {{ form_row(registrationForm.agreeTerms, {
-                        'attr': {'class': 'form-check-input'},
-                        'label_attr': {'class': 'form-check-label'}
-                    }) }}
-                </div>
-
                 <!-- Submit button -->
-                <button type="submit" class="btn btn-primary w-100">Register</button>
+                <button type="submit" class="btn btn-dark w-100">¡Regístrate!</button>
                 
                 {{ form_end(registrationForm) }}
             </div>

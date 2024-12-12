@@ -48,7 +48,7 @@ class ProductController extends AbstractController
         return $this->render('product/producto.html.twig', ['producto' => $producto]);
     }
 
-    #[Route('/product/todos', name: 'producto_todos')]
+    #[Route('/productos/todos', name: 'producto_todos')]
     public function listarProductos(EntityManagerInterface $entityManager, PaginatorInterface $paginator, Request $request): Response
     {
         // Obtener todos los productos de la base de datos

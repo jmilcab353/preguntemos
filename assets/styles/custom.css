@@ -1,0 +1,19 @@
+/* Flexbox layout for sticky footer */
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    background-color: rgb(243, 243, 243);
+}
+
+#logoNavbar {
+    margin-right: 15px;
+}
