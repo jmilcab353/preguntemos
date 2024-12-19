@@ -21,25 +21,38 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Debug the submitted data
+            // dd($request->request->all());
+
+
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
-            $form->
-            // var_dump($user);
-            // die;
 
-            // encode the plain password
+            // Encode/hash the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+
+            // Assign ROLE_USER as a default role
+            // if (empty($user->getRoles())) {
+            $user->setRoles(['ROLE_USER']);
+            // }
 
             $entityManager->persist($user);
             $entityManager->flush();
 
+            // Add a success flash message
+            // $this->addFlash('success', '¡Registro completado exitosamente!');
+
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('producto_todos');
+            // Log the user in automatically
+            // $userAuthenticator->authenticateUser($user, $authenticator, $request);
+
+            // Redirect to home page (index route)
+            return $this->redirectToRoute('index');
         }
 
         return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form,
+            'registrationForm' => $form->createView(),
         ]);
     }
 }

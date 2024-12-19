@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Iniciar sesión{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Iniciar sesión</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <!-- Display error message -->
+                {% if error %}
+                    <div class="alert alert-danger">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
+
+                {% if app.user %}
+                    <div class="alert alert-info">
+                        Ya estás conectado como {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Cerrar sesión</a>
+                    </div>
+                {% endif %}
+
+                <!-- Start the form -->
+                <form method="post">
+                    <!-- Email field -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Email</label>
+                        <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required>
+                    </div>
+
+                    <!-- Password field -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+                    </div>
+
+                    <!-- CSRF token -->
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    {#
+                    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                    See https://symfony.com/doc/current/security/remember_me.html
+
+                    <div class="checkbox mb-3">
+                        <input type="checkbox" name="_remember_me" id="_remember_me">
+                        <label for="_remember_me">Remember me</label>
+                    </div>
+                    #}
+
+                    <!-- Submit button -->
+                    <button class="btn btn-dark w-100" type="submit">
+                        Iniciar sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

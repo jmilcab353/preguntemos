@@ -38,12 +38,21 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/">LIVE ♥</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/">Inicia sesión ♦</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_register') }}">Regístrate ♣</a>
-                            </li>
+                            {# if not logged in #}
+                            {% if not app.user %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_login') }}">Inicia sesión ♦</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_register') }}">Regístrate ♣</a>
+                                </li>
+                            {% endif %}
+                            {# Only visible if user is logged in #}
+                            {% if app.user %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_logout') }}">Cerrar sesión ♣</a>
+                                </li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>

@@ -18,15 +18,16 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
-            // ->add('agreeTerms', CheckboxType::class, [
-            //     'mapped' => false,
-            //     'constraints' => [
-            //         new IsTrue([
-            //             'message' => 'You should agree to our terms.',
-            //         ]),
-            //     ],
-            // ])
+            ->add('email', null, [
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Por favor introduce un email',
+                    ]),
+                    new \Symfony\Component\Validator\Constraints\Email([
+                        'message' => 'Por favor introduce un email válido',
+                    ]),
+                ],
+            ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
@@ -44,14 +45,16 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('roles', ChoiceType::class, [
-                'choices' => [
-                    'Usuario' => 'ROLE_USER',
-                    'Administrador' => 'ROLE_ADMIN',
-                ],
-                'expanded' => true,
-                'multiple' => true,
-            ])
+            // ->add('roles', ChoiceType::class, [
+            //     'choices' => [
+            //         'Usuario' => 'ROLE_USER',
+            //         'Administrador' => 'ROLE_ADMIN',
+            //     ],
+            //     'expanded' => true,
+            //     'multiple' => true,
+            //     'attr' => ['style' => 'display: none;'], // Hide the field
+            //     'label' => false, // Remove the label
+            // ])
         ;
     }
 
