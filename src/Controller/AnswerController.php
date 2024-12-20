@@ -4,8 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Answer;
 use App\Entity\Question;
-use App\Entity\User;
-use App\Form\AnswerType;
+use App\Form\Answer1Type;
 use App\Repository\AnswerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +27,7 @@ final class AnswerController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $answer = new Answer();
-        $form = $this->createForm(AnswerType::class, $answer);
+        $form = $this->createForm(Answer1Type::class, $answer);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -55,7 +54,7 @@ final class AnswerController extends AbstractController
     #[Route('/{id}/edit', name: 'app_answer_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Answer $answer, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(AnswerType::class, $answer);
+        $form = $this->createForm(Answer1Type::class, $answer);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -80,50 +79,5 @@ final class AnswerController extends AbstractController
 
         return $this->redirectToRoute('app_answer_index', [], Response::HTTP_SEE_OTHER);
     }
-
-    #[Route('/choose_answer', name: 'choose_answer', methods: ['POST'])]
-    public function chooseAnswer(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        // Get the submitted data
-        $userId = $request->request->get('user_id');
-        $questionId = $request->request->get('question_id');
-        $selectedAnswer = $request->request->get('answer');
-
-        // Fetch the user and question entities based on the IDs submitted
-        $user = $entityManager->getRepository(User::class)->find($userId);
-        $question = $entityManager->getRepository(Question::class)->find($questionId);
-
-        // Check if the user or question was not found
-        if (!$user || !$question) {
-            throw $this->createNotFoundException('User or Question not found.');
-        }
-
-        // Create a new Answer entity
-        $answer = new Answer();
-
-        // Set the actual User and Question entities
-        $answer->setUser($user); // Set the actual User object
-        $answer->setQuestion($question); // Set the actual Question object
-        $answer->setChosenAnswer($selectedAnswer); // Set the chosen answer
-        $answer->setTimestamp(new \DateTime()); // Set the current timestamp
-
-        dd($answer);
-
-        // Persist the answer to the database
-        $entityManager->persist($answer);
-        $entityManager->flush();
-
-        // Check if the answer is correct
-        $isCorrect = $selectedAnswer === $question->getCorrectAnswer();
-
-        // Provide feedback to the user
-        $message = $isCorrect ? 'Correct!' : 'Wrong answer. Try again!';
-
-        // Add flash message for feedback
-        $this->addFlash('info', $message);
-
-        // Redirect to a different route (e.g., to show the next question or to the index)
-        return $this->redirectToRoute('index');
-        // return dd($answer);
-    }
+    
 }

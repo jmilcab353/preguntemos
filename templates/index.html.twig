@@ -22,53 +22,63 @@
     <div id="main-content" class="row">
         {# DIV 2/3 width Pregunta actual #} 
         <div class="col-md-8">
-            {# Form to choose the correct answer, send it to the database and also reveal the correct answer #}
-            <div id="choose-answer" class="card mb-4">
-                <div class="card-body">
-                    {% if app.user %}
-                        <form action="{{ path('choose_answer') }}" method="post">
-                            <h5 class="card-title">Pregunta: {{ question.questionText }}</h5>
-
-                            <!-- Include user ID and question ID in the form -->
-                            <input type="hidden" name="user_id" value="{{ app.user.id }}">
-                            <input type="hidden" name="question_id" value="{{ question.id }}">
-
-                            <div class="form-check">
-                                <input type="radio" name="answer" value="1" id="answer_one" class="form-check-input">
-                                <label for="answer_one" class="form-check-label">{{ question.answerOne }}</label>
-                            </div>
-
-                            <div class="form-check">
-                                <input type="radio" name="answer" value="2" id="answer_two" class="form-check-input">
-                                <label for="answer_two" class="form-check-label">{{ question.answerTwo }}</label>
-                            </div>
-
-                            <div class="form-check">
-                                <input type="radio" name="answer" value="3" id="answer_three" class="form-check-input">
-                                <label for="answer_three" class="form-check-label">{{ question.answerThree }}</label>
-                            </div>
-
-                            <div class="form-check">
-                                <input type="radio" name="answer" value="4" id="answer_four" class="form-check-input">
-                                <label for="answer_four" class="form-check-label">{{ question.answerFour }}</label>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary mt-3">Enviar respuesta</button>
-                        </form>
-                    {% else %}
-                        <p class="text-danger">Debes iniciar sesión para responder la pregunta.</p>
-                    {% endif %}
-                </div>
-            </div>
-
-            {% if app.user %}
-                <div id="correct-answer" class="card">
+            {# Check if the question exists before showing the form #}
+            {% if question %}
+                <div id="choose-answer" class="card mb-4">
                     <div class="card-body">
-                        <button class="btn btn-secondary mb-2" onclick="document.getElementById('correct-answer-text').classList.toggle('d-none')">
-                            Ver respuesta
-                        </button>
-                        <p id="correct-answer-text" class="d-none">Respuesta correcta: <strong>{{ question.correctAnswer }}</strong></p>
+                        {% if app.user %}
+                            <form id="choose-answer-form">
+                                <input type="hidden" id="user_id" name="user_id" value="{{ app.user.id }}">
+                                <input type="hidden" id="question_id" name="question_id" value="{{ question.id }}">
+
+                                <div>
+                                    <h5 class="card-title">Pregunta: {{ question.questionText }}</h5>
+                                </div>
+
+                                <div class="form-check">
+                                    <input type="radio" name="answer" value="1" id="answer_one" class="form-check-input">
+                                    <label for="answer_one" class="form-check-label">1. {{ question.answerOne }}</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input type="radio" name="answer" value="2" id="answer_two" class="form-check-input">
+                                    <label for="answer_two" class="form-check-label">2. {{ question.answerTwo }}</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input type="radio" name="answer" value="3" id="answer_three" class="form-check-input">
+                                    <label for="answer_three" class="form-check-label">3. {{ question.answerThree }}</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input type="radio" name="answer" value="4" id="answer_four" class="form-check-input">
+                                    <label for="answer_four" class="form-check-label">4. {{ question.answerFour }}</label>
+                                </div>
+
+                                <button type="button" id="submit-answer" class="btn btn-primary mt-3">Enviar respuesta</button>
+
+                                {# Message area to show the success message after submission #}
+                                <div id="response-message" class="mt-3"></div>
+                            </form>
+                        {% else %}
+                            <p class="text-danger">Debes iniciar sesión para responder la pregunta.</p>
+                        {% endif %}
                     </div>
+                </div>
+
+                {% if app.user %}
+                    <div id="correct-answer" class="card">
+                        <div class="card-body">
+                            <button class="btn btn-secondary mb-2" onclick="document.getElementById('correct-answer-text').classList.toggle('d-none')">
+                                Ver respuesta
+                            </button>
+                            <p id="correct-answer-text" class="d-none">Respuesta correcta: <strong>{{ question.correctAnswer }}</strong></p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-warning" role="alert">
+                    No hay preguntas disponibles en este momento.
                 </div>
             {% endif %}
         </div>
@@ -78,6 +88,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Estadísticas</h5>
+                    <canvas id="response-chart" width="400" height="200"></canvas>
                 </div>
             </div>
         </div>
@@ -86,36 +97,43 @@
 {% endblock %}
 
 {% block javascripts %}
-{# Added for debugging purposes #}
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const form = document.querySelector('form');
-        if (form) {
-            form.addEventListener('submit', function(event) {
-                // Confirm form submission
-                console.log('Form submitted');
-            });
-        } else {
-            console.log("Form not found");
-        }
-        
-        if (form) {
-            form.addEventListener('submit', function(event) {
-                // Prevent form submission for debugging
-                event.preventDefault();
-                
-                // Log form data
-                const formData = new FormData(form);
-                formData.forEach((value, key) => {
-                    console.log(key + ": " + value);  // Print each field's name and value
-                });;
+document.addEventListener("DOMContentLoaded", function () {
+    const submitButton = document.getElementById("submit-answer");
+    const responseMessage = document.getElementById("response-message");
 
-                // Optionally submit the form after logging data
-                form.submit(); // Uncomment this line to actually submit the form after logging
-            });
-        } else {
-            console.log("Form not found");
+    submitButton.addEventListener("click", function () {
+        const userId = document.getElementById("user_id").value;
+        const questionId = document.getElementById("question_id").value;
+        const answer = document.querySelector("input[name='answer']:checked");
+
+        if (!answer) {
+            alert("Por favor selecciona una respuesta.");
+            return;
         }
+
+        const payload = {
+            user_id: userId,
+            question_id: questionId,
+            answer: answer.value,
+        };
+
+        fetch(`/choose_answer`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+        })
+        .then((response) => {
+            responseMessage.innerHTML = '<div class="alert alert-success">Respuesta enviada con éxito.</div>';
+            
+            // Hacer desaparecer el mensaje después de 2 segundos
+            setTimeout(() => {
+                responseMessage.innerHTML = '';
+            }, 2000);
+        })
     });
+});
 </script>
 {% endblock %}

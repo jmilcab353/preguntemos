@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Question{% endblock %}
+
+{% block body %}
+    <h1>Question</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ question.id }}</td>
+            </tr>
+            <tr>
+                <th>QuestionText</th>
+                <td>{{ question.questionText }}</td>
+            </tr>
+            <tr>
+                <th>AnswerOne</th>
+                <td>{{ question.answerOne }}</td>
+            </tr>
+            <tr>
+                <th>AnswerTwo</th>
+                <td>{{ question.answerTwo }}</td>
+            </tr>
+            <tr>
+                <th>AnswerThree</th>
+                <td>{{ question.answerThree }}</td>
+            </tr>
+            <tr>
+                <th>AnswerFour</th>
+                <td>{{ question.answerFour }}</td>
+            </tr>
+            <tr>
+                <th>CorrectAnswer</th>
+                <td>{{ question.correctAnswer }}</td>
+            </tr>
+            <tr>
+                <th>BeginTime</th>
+                <td>{{ question.beginTime ? question.beginTime|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EndTime</th>
+                <td>{{ question.endTime ? question.endTime|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_question_index') }}">back to list</a>
+
+    <a href="{{ path('app_question_edit', {'id': question.id}) }}">edit</a>
+
+    {{ include('question/_delete_form.html.twig') }}
+{% endblock %}

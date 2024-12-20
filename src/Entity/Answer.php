@@ -17,7 +17,7 @@ class Answer
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $timestamp = null;
 
-    #[ORM\Column(length: 1)]
+    #[ORM\Column(length: 255)]
     private ?string $chosenAnswer = null;
 
     #[ORM\ManyToOne(inversedBy: 'answers')]
